@@ -36,7 +36,7 @@ export default function Navbar() {
             <a href="#testimonials">Testimonials</a>
           </li>
         </ul>
-        <button>Log IN</button>
+    
       </Nav>
       <ResponsiveNav state={navbarState}>
         <ul>

@@ -23,7 +23,7 @@ export default function Hero() {
     <label for="category">Select Category:</label>
     <select id="category">
       <option value="movie">Movie</option>
-      <option value="series">Series</option>
+      <option value="TV Show">TV Show</option>
       
       
     </select>
@@ -104,6 +104,7 @@ const Section = styled.section`
         justify-content: center;
         flex-direction: column;
         padding: 0 1.5rem;
+        background-color: rgba(255,255,255,0.5);
         label {
           font-size: 1.8rem;
           color: #03045e;
