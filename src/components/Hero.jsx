@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import homeVideo from "../assets/netflix.mp4";
 import axios from "axios";
+import { Link } from "react-router-dom";
 export default function Hero() {
   const [category, setCategory] = useState('movie');
   const [name, setName] = useState('');
@@ -68,7 +69,10 @@ export default function Hero() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
+          <Link to="/menu">
           <button onClick={searchMovie}>Search</button>
+          </Link>
+          
         </div>
       </div>
     </Section>
