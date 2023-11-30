@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import homeVideo from "../assets/netflix.mp4";
 import axios from "axios";
@@ -32,7 +32,14 @@ export default function Hero() {
   };
   
   // Rest Code use api response
-
+useEffect(()=>{
+  if (responseData){
+    console.log("respone data hai ")
+  } 
+  else{
+    console.log("nhi nil rha ")
+  }
+},[])
 
 
 
@@ -69,6 +76,11 @@ export default function Hero() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
+          {/* {responseData ? ( */}
+            {/* console.log("response data mil rah h ai ") */}
+          {/* ):( */}
+            {/* console.log("nhi mil rha ") */}
+          {/* )} */}
           <Link to="/menu">
           <button onClick={searchMovie}>Search</button>
           </Link>
@@ -114,7 +126,7 @@ const Section = styled.section`
         letter-spacing: 0.2rem;
       }
       p {
-        text-align: center;
+        text-align:center;
         padding: 0 30vw;
         margin-top: 0.5rem;
         font-size: 1.2rem;
@@ -122,7 +134,7 @@ const Section = styled.section`
     }
     .search {
       display: flex;
-      background-color: #ffffffce;
+      background-color: transparent;
       padding: 0.5rem;
       border-radius: 0.5rem;
       .container {
@@ -131,9 +143,10 @@ const Section = styled.section`
         justify-content: center;
         flex-direction: column;
         padding: 0 1.5rem;
+        font-weight:600;
         label {
           font-size: 1.8rem;
-          color: #03045e;
+          color: white;
         }
         
 input[type="text"]::placeholder {
@@ -146,13 +159,14 @@ input[type="text"]::placeholder {
           background-color: transparent;
           border: none;
           text-align: center;
-          color: black;
+          color: white;
+      
           &[type="date"] {
             padding-left: 3rem;
           }
 
           &::placeholder {
-            color: black;
+            color: white;
           }
           &:focus {
             outline: none;
