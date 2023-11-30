@@ -1,57 +1,80 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import homeVideo from "../assets/netflix.mp4";
+import axios from "axios";
 export default function Hero() {
+  const [category, setCategory] = useState('movie');
+  const [name, setName] = useState('');
+  const [responseData, setResponseData] = useState(null);
+  console.log(responseData);
+
+  const searchMovie = () => {
+    const apiUrl = 'http://localhost:8000/api/search';
+    let dataVar
+    console.log(category,name);
+
+
+    if(category && name){
+      dataVar = { category:category ,name:name}; 
+    }
+    
+
+
+    axios.post(apiUrl,dataVar)
+      .then(response => {
+        
+        setResponseData(response.data);
+      })
+      .catch(error => {
+        console.error('Error making API request:', error);
+      });
+  };
+  
+  // Rest Code use api response
+
+
+
+
   return (
     <Section id="hero">
       <div className="background">
-      <video autoPlay loop muted>
-        <source src={homeVideo} type="video/mp4" />
-        Your Browser doest not support the video tag.
+        <video autoPlay loop muted>
+          <source src={homeVideo} type="video/mp4" />
+          Your Browser does not support the video tag.
         </video>
       </div>
       <div className="content">
         <div className="title">
           <h1>Stream. Binge. Repeat.</h1>
           <p>
-          Our movie platform is your one-stop destination for an unparalleled entertainment experience. Immerse yourself in a world of endless choices, where blockbuster hits, timeless classics, and hidden gems await your discovery. 
+            Our movie platform is your one-stop destination for an unparalleled entertainment experience. Immerse yourself in a world of endless choices, where blockbuster hits, timeless classics, and hidden gems await your discovery.
           </p>
         </div>
-        <div class="search">
-  
-  <div class="container">
-    <label for="category">Select Category:</label>
-    <select id="category">
-      <option value="movie">Movie</option>
-      <option value="TV Show">TV Show</option>
-      
-      
-    </select>
-  </div>
-
-  
-  <div class="container">
-    <label for="movieName">Search for a Movie:</label>
-    <input type="text" id="movieName" placeholder="Enter movie name" />
-  </div>
-
-
-  <button onclick="searchMovie()">Search</button>
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
+        <div className="search">
+          <div className="container">
+            <label htmlFor="category">Select Category:</label>
+            <select id="category" value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="movie">Movie</option>
+              <option value="TV Show">TV Show</option>
+            </select>
+          </div>
+          <div className="container">
+            <label htmlFor="movieName">Search for a Movie:</label>
+            <input
+              type="text"
+              id="movieName"
+              placeholder="Enter movie name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <button onClick={searchMovie}>Search</button>
+        </div>
+      </div>
     </Section>
   );
 }
+
 
 const Section = styled.section`
   position: relative;
@@ -104,7 +127,6 @@ const Section = styled.section`
         justify-content: center;
         flex-direction: column;
         padding: 0 1.5rem;
-        background-color: rgba(255,255,255,0.5);
         label {
           font-size: 1.8rem;
           color: #03045e;

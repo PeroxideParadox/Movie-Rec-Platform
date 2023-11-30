@@ -18,7 +18,7 @@ export default function Navbar() {
               <VscChromeClose onClick={() => setNavbarState(false)} />
             ) : (
               <GiHamburgerMenu onClick={() => setNavbarState(true)} />
-            )}
+            )} aaaaaa
           </div>
         </div>
 
