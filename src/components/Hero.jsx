@@ -97,7 +97,10 @@ export default function Hero() {
       } else if (matchingMovie.Platform?.toLowerCase() === 'disney hotstar') {
         console.log('Redirecting to hotstar...');
         window.location.href = 'https://www.hotstar.com/in/home?ref=%2Fin';
-      } else {
+      }else if (matchingMovie.Platform?.toLowerCase() === 'amazon prime') {
+        console.log('Redirecting to Amazon Prime Video...');
+        window.location.href = 'https://www.primevideo.com/';
+     } else {
         console.log('Platform not recognized for redirection.');
       }
     } else {
@@ -208,6 +211,7 @@ const Section = styled.section`
       background-color: #ffffffce;
       padding: 0.5rem;
       border-radius: 0.5rem;
+      background-color:transparent;
       .container {
         display: flex;
         align-items: center;
@@ -216,11 +220,11 @@ const Section = styled.section`
         padding: 0 1.5rem;
         label {
           font-size: 1.8rem;
-          color: #03045e;
+          color: white;
         }
         
 input[type="text"]::placeholder {
-  font-size: 1rem; 
+  font-size: 1.1rem; 
 }
 
 
@@ -229,13 +233,14 @@ input[type="text"]::placeholder {
           background-color: transparent;
           border: none;
           text-align: center;
-          color: black;
+          color: white;
           &[type="date"] {
             padding-left: 3rem;
           }
 
           &::placeholder {
-            color: black;
+            color: white;
+            
           }
           &:focus {
             outline: none;
