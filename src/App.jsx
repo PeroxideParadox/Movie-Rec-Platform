@@ -18,7 +18,7 @@ export default function App() {
       duration: 2000,
       reset: true,
     });
-    sr.reveal(
+    sr.reveal( 
       `
         nav,
         #hero,

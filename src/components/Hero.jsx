@@ -1,45 +1,114 @@
-import React, { useEffect, useState } from "react";
+import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import homeVideo from "../assets/netflix.mp4";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Papa from 'papaparse';
+
+
+
 export default function Hero() {
   const [category, setCategory] = useState('movie');
   const [name, setName] = useState('');
   const [responseData, setResponseData] = useState(null);
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  
+
+
   console.log(responseData);
 
-  const searchMovie = () => {
-    const apiUrl = 'http://localhost:8000/api/search';
-    let dataVar
-    console.log(category,name);
+  // const searchMovie = () => {
+  //   const apiUrl = 'http://localhost:8000/api/search';
+
+  //   let dataVar
+  //   console.log(category,name);
 
 
-    if(category && name){
-      dataVar = { category:category ,name:name}; 
-    }
+  //   if(category && name){
+  //     dataVar = { category:category ,name:name}; 
+  //   }
     
 
 
-    axios.post(apiUrl,dataVar)
-      .then(response => {
+  //   axios.post(apiUrl,dataVar)
+  //     .then(response => {
         
-        setResponseData(response.data);
-      })
-      .catch(error => {
-        console.error('Error making API request:', error);
-      });
+  //       setResponseData(response.data);
+  //     })
+      
+  //     .catch(error => {
+  //       console.error('Error making API request:', error);
+  //     });
+  // };
+  // Rest Code use api response
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('netflix_titles.csv');
+        const text = await response.text();
+  
+        // Use PapaParse to parse the CSV text
+        Papa.parse(text, {
+          header: true,
+          dynamicTyping: true,
+          complete: (result) => {
+            setData(result.data);
+          },
+          error: (error) => {
+            console.error('CSV Parsing Error:', error.message);
+          },
+        });
+      } catch (error) {
+        console.error('Fetch Error:', error.message);
+      }
+    };
+  
+    fetchData();
+  }, []);
+
+
+  //this is the main function which is handling search button and event trigering 
+  const handleSearch = () => {
+    if (searchTerm === undefined || searchTerm.trim() === '') {
+      console.log('Please enter a valid search term.');
+      return;
+    }
+  
+    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  
+    const matchingMovie = data.find((row) => {
+      const name = row.Name;
+  
+      if (name && typeof name === 'string') {
+        return name.trim().toLowerCase() === normalizedSearchTerm;
+      }
+  
+      return false;
+    });
+  
+    if (matchingMovie) {
+      console.log(`Movie "${searchTerm}" is present in the CSV file.`);
+  
+      if (matchingMovie.Platform?.toLowerCase() === 'nettflix') {
+        console.log('Redirecting to Netflix...');
+        window.location.href = 'https://www.netflix.com/';
+      } else if (matchingMovie.Platform?.toLowerCase() === 'disney hotstar') {
+        console.log('Redirecting to hotstar...');
+        window.location.href = 'https://www.hotstar.com/in/home?ref=%2Fin';
+      } else {
+        console.log('Platform not recognized for redirection.');
+      }
+    } else {
+      console.log(`Movie "${searchTerm}" is not found in the CSV file.`);
+      alert("Cannot find the result")
+    }
   };
   
-  // Rest Code use api response
-useEffect(()=>{
-  if (responseData){
-    console.log("respone data hai ")
-  } 
-  else{
-    console.log("nhi nil rha ")
-  }
-},[])
+  
+  
+
 
 
 
@@ -69,21 +138,23 @@ useEffect(()=>{
           <div className="container">
             <label htmlFor="movieName">Search for a Movie:</label>
             <input
-              type="text"
-              id="movieName"
-              placeholder="Enter movie name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+          type="text"
+          placeholder="Search for a movie..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
           </div>
-          {/* {responseData ? ( */}
-            {/* console.log("response data mil rah h ai ") */}
-          {/* ):( */}
-            {/* console.log("nhi mil rha ") */}
-          {/* )} */}
-          <Link to="/menu">
-          <button onClick={searchMovie}>Search</button>
-          </Link>
+          {/* <Link to="/menu"> */}
+          <button onClick={handleSearch}>Search</button>
+         
+          {/* </Link> */}
+          {/* <ul>
+        {data.map((row, index) => (
+          <li key={index}>
+            Platform: {row?.Platform}, Category: {row.Category}, Name: {row.Name}, Duration: {row.duration}
+          </li>
+        ))}
+      </ul> */}
           
         </div>
       </div>
@@ -126,7 +197,7 @@ const Section = styled.section`
         letter-spacing: 0.2rem;
       }
       p {
-        text-align:center;
+        text-align: center;
         padding: 0 30vw;
         margin-top: 0.5rem;
         font-size: 1.2rem;
@@ -134,7 +205,7 @@ const Section = styled.section`
     }
     .search {
       display: flex;
-      background-color: transparent;
+      background-color: #ffffffce;
       padding: 0.5rem;
       border-radius: 0.5rem;
       .container {
@@ -143,10 +214,9 @@ const Section = styled.section`
         justify-content: center;
         flex-direction: column;
         padding: 0 1.5rem;
-        font-weight:600;
         label {
           font-size: 1.8rem;
-          color: white;
+          color: #03045e;
         }
         
 input[type="text"]::placeholder {
@@ -159,14 +229,13 @@ input[type="text"]::placeholder {
           background-color: transparent;
           border: none;
           text-align: center;
-          color: white;
-      
+          color: black;
           &[type="date"] {
             padding-left: 3rem;
           }
 
           &::placeholder {
-            color: white;
+            color: black;
           }
           &:focus {
             outline: none;
