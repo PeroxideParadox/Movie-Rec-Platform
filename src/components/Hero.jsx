@@ -1,30 +1,20 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import homeVideo from "../assets/netflix.mp4";
 import Papa from 'papaparse';
 
-
-
 export default function Hero() {
   const [category, setCategory] = useState('movie');
-  const [name, setName] = useState('');
-  const [responseData, setResponseData] = useState(null);
-  const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  
+  const [data, setData] = useState([]);
+  const [showBanner, setShowBanner] = useState(false);
 
-
-  console.log(responseData);
-
-        
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('netflix_titles.csv');
         const text = await response.text();
-  
+
         // Use PapaParse to parse the CSV text
         Papa.parse(text, {
           header: true,
@@ -40,59 +30,53 @@ export default function Hero() {
         console.error('Fetch Error:', error.message);
       }
     };
-  
+
     fetchData();
   }, []);
 
-
-  //this is the main function which is handling search button and event trigering 
   const handleSearch = () => {
     if (searchTerm === undefined || searchTerm.trim() === '') {
       console.log('Please enter a valid search term.');
       return;
     }
-  
+
     const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-  
+
     const matchingMovie = data.find((row) => {
       const name = row.Name;
-  
+
       if (name && typeof name === 'string') {
         return name.trim().toLowerCase() === normalizedSearchTerm;
       }
-  
+
       return false;
     });
-  
+
     if (matchingMovie) {
       console.log(`Movie "${searchTerm}" is present in the CSV file.`);
-  
+
       if (matchingMovie.Platform?.toLowerCase() === 'nettflix') {
-        console.log('Redirecting to Netflix...');
-        window.location.href = 'https://www.netflix.com/';
+        console.log('Redirecting to Netflix search page...');
+        window.open(`https://www.netflix.com/search?q=${encodeURIComponent(searchTerm)}`, '_blank');
       } else if (matchingMovie.Platform?.toLowerCase() === 'disney hotstar') {
-        console.log('Redirecting to hotstar...');
-        window.location.href = 'https://www.hotstar.com/in/home?ref=%2Fin';
-      }else if (matchingMovie.Platform?.toLowerCase() === 'amazon prime') {
-        console.log('Redirecting to Amazon Prime Video...');
-        window.location.href = 'https://www.primevideo.com/';
-     } else {
+        console.log('Redirecting to Hotstar search page...');
+        window.open(`https://www.hotstar.com/in/search?q=${encodeURIComponent(searchTerm)}`, '_blank');
+      } else if (matchingMovie.Platform?.toLowerCase() === 'amazon prime') {
+        console.log('Redirecting to Amazon Prime Video search page...');
+        window.open(`https://www.primevideo.com/search/ref=atv_nb_sr?phrase=${encodeURIComponent(searchTerm)}`, '_blank');
+      } else {
         console.log('Platform not recognized for redirection.');
       }
     } else {
       console.log(`Movie "${searchTerm}" is not found in the CSV file.`);
-      alert("Cannot find the result")
+      setShowBanner(true);
+      setTimeout(() => setShowBanner(false), 3000);
     }
   };
-  
-  
-  
-
-
-
 
   return (
     <Section id="hero">
+      {showBanner && <Banner>Can't find the result</Banner>}
       <div className="background">
         <video autoPlay loop muted>
           <source src={homeVideo} type="video/mp4" />
@@ -117,33 +101,21 @@ export default function Hero() {
           <div className="container">
             <label htmlFor="movieName">Search for a Movie:</label>
             <div className="input-box">
-            <input
-          type="text"
-          id="movieName"
-          placeholder="Search for a movie."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+              <input
+                type="text"
+                id="movieName"
+                placeholder="Search for a movie."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
-          </div>
-          {/* <Link to="/menu"> */}
           <button onClick={handleSearch}>Search</button>
-         
-          {/* </Link> */}
-          {/* <ul>
-        {data.map((row, index) => (
-          <li key={index}>
-            Platform: {row?.Platform}, Category: {row.Category}, Name: {row.Name}, Duration: {row.duration}
-          </li>
-        ))}
-      </ul> */}
-          
         </div>
       </div>
     </Section>
   );
 }
-
 
 const Section = styled.section`
   position: relative;
@@ -180,7 +152,7 @@ const Section = styled.section`
       }
       p {
         text-align: center;
-        padding: 0 30vw;
+        padding: 0 10vw;  // Adjusted to take the entire width
         margin-top: 0.5rem;
         font-size: 1.2rem;
       }
@@ -274,4 +246,16 @@ const Section = styled.section`
       }
     }
   }
+`;
+
+const Banner = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: red;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+  z-index: 1000;
 `;
