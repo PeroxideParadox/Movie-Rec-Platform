@@ -1,8 +1,6 @@
 import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import homeVideo from "../assets/netflix.mp4";
-import axios from "axios";
-import { Link } from "react-router-dom";
 import Papa from 'papaparse';
 
 
@@ -19,30 +17,8 @@ export default function Hero() {
 
   console.log(responseData);
 
-  // const searchMovie = () => {
-  //   const apiUrl = 'http://localhost:8000/api/search';
-
-  //   let dataVar
-  //   console.log(category,name);
-
-
-  //   if(category && name){
-  //     dataVar = { category:category ,name:name}; 
-  //   }
-    
-
-
-  //   axios.post(apiUrl,dataVar)
-  //     .then(response => {
         
-  //       setResponseData(response.data);
-  //     })
-      
-  //     .catch(error => {
-  //       console.error('Error making API request:', error);
-  //     });
-  // };
-  // Rest Code use api response
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -140,12 +116,15 @@ export default function Hero() {
           </div>
           <div className="container">
             <label htmlFor="movieName">Search for a Movie:</label>
+            <div className="input-box">
             <input
           type="text"
-          placeholder="Search for a movie..."
+          id="movieName"
+          placeholder="Search for a movie."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+          </div>
           </div>
           {/* <Link to="/menu"> */}
           <button onClick={handleSearch}>Search</button>
@@ -176,8 +155,8 @@ const Section = styled.section`
     height: 100%;
     video {
       width: 100%;
-      height:100%;
-      object-fit:cover:
+      height: 100%;
+      object-fit: cover;
       filter: brightness(60%);
     }
   }
@@ -208,10 +187,10 @@ const Section = styled.section`
     }
     .search {
       display: flex;
-      background-color: #ffffffce;
-      padding: 0.5rem;
+      background-color: transparent;
+      padding: 1rem;
       border-radius: 0.5rem;
-      background-color:transparent;
+      gap: 1rem;
       .container {
         display: flex;
         align-items: center;
@@ -219,31 +198,32 @@ const Section = styled.section`
         flex-direction: column;
         padding: 0 1.5rem;
         label {
-          font-size: 1.8rem;
+          font-size: 1.2rem;
           color: white;
+          margin-bottom: 0.5rem;
         }
-        
-input[type="text"]::placeholder {
-  font-size: 1.1rem; 
-}
-
-
-
-        input {
-          background-color: transparent;
-          border: none;
-          text-align: center;
-          color: white;
-          &[type="date"] {
-            padding-left: 3rem;
-          }
-
-          &::placeholder {
-            color: white;
-            
-          }
-          &:focus {
-            outline: none;
+        select, .input-box {
+          width: 100%;
+          border: 1px solid #ccc;
+          border-radius: 0.5rem;
+          padding: 0.5rem;
+          background-color: #fff;
+          color: #000;
+          font-size: 1rem;
+        }
+        .input-box {
+          input {
+            width: 100%;
+            border: none;
+            background-color: transparent;
+            text-align: center;
+            color: #000;
+            &::placeholder {
+              color: #000;
+            }
+            &:focus {
+              outline: none;
+            }
           }
         }
       }
@@ -266,7 +246,6 @@ input[type="text"]::placeholder {
   @media screen and (min-width: 280px) and (max-width: 980px) {
     height: 25rem;
     .background {
-      background-color: palegreen;
       video {
         height: 100%;
       }
@@ -285,18 +264,13 @@ input[type="text"]::placeholder {
         flex-direction: column;
         padding: 0.8rem;
         gap: 0.8rem;
-        /* padding: 0; */
         .container {
           padding: 0 0.8rem;
-          input[type="date"] {
-            padding-left: 1rem;
-          }
         }
         button {
           padding: 1rem;
           font-size: 1rem;
         }
-        /* display: none; */
       }
     }
   }
